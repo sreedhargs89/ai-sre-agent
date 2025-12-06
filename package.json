@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "kubernetes-mcp-server": "^0.0.55"
+  }
+}

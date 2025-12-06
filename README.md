@@ -89,6 +89,13 @@ graph LR
 *   **Core Engine**: `src/core/agent.py` - Manages conversation state and tool execution loop.
 *   **Protocol**: Uses `stdio` to communicate with the `kubernetes-mcp-server` toolset.
 
+
+## 🔮 Future Roadmap
+
+We are building towards a fully autonomous **Level 4 SRE Agent** that can self-heal and optimize clusters without human intervention.
+
+👉 **[Read our detailed Future Vision & Roadmap here](FUTURE_VISION.md)**
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

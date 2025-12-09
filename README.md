@@ -19,7 +19,7 @@ The **AI SRE Agent** is a next-generation operational tool that bridges the gap 
 ## 🚀 Quick Start
 
 ### Prerequisites
-*   Python 3.11+
+*   Python 3.11+ (Required for `mcp` SDK)
 *   Node.js & npm (for the MCP server)
 *   A running Kubernetes cluster (Minikube, Kind, GKE, EKS, etc.)
 *   `kubectl` configured locally
@@ -32,9 +32,15 @@ The **AI SRE Agent** is a next-generation operational tool that bridges the gap 
     cd ai-sre-agent
     ```
 
-2.  **Install Python Dependencies**
+2.  **Run Setup Script**
+    This handles Python 3.11, virtual environment, and dependencies automatically.
     ```bash
-    pip install -r requirements.txt
+    ./setup.sh
+    ```
+
+3.  **Activate Environment**
+    ```bash
+    source .venv/bin/activate
     ```
 
 3.  **Install MCP Server**

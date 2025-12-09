@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-crash
+  namespace: default
+  labels:
+    app: backend-crash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-crash
+  template:
+    metadata:
+      labels:
+        app: backend-crash
+    spec:
+      containers:
+      - name: crasher
+        image: python:3.9-slim
+        command: ["/bin/sh"]
+        # Simulate a startup, work for a bit, then crash
+        args: ["-c", "echo 'Starting Backend API...'; sleep 10; echo 'CRITICAL: Database connection failed'; exit 1"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"

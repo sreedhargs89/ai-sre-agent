@@ -46,5 +46,21 @@ def run(query: str):
             
     asyncio.run(_run())
 
+@app.command()
+def daemon(interval: int = 60, auto_fix: bool = False):
+    """
+    Start the AI SRE Observer Daemon (Background Mode)
+    
+    Args:
+        interval: Time in seconds between checks.
+        auto_fix: If True, the agent is authorized to attempt fixes (e.g., restart pods).
+    """
+    from src.core.daemon import AISREDaemon
+    async def _run():
+        daemon = AISREDaemon(interval=interval, auto_fix=auto_fix)
+        await daemon.start()
+
+    asyncio.run(_run())
+
 if __name__ == "__main__":
     app()

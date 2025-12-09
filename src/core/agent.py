@@ -63,7 +63,9 @@ class AISREContext:
 
     async def run_query(self, user_query: str):
         """Runs the main agent loop for a query"""
-        self.history.append({"role": "user", "content": user_query})
+        # CRITICAL: Reset history for each new query to prevent context window explosion
+        # The daemon calls this repeatedly, so we must start fresh each time.
+        self.history = [{"role": "user", "content": user_query}]
         
         console.print(f"[cyan]🤖 Assessing: {user_query}[/cyan]")
         
@@ -88,8 +90,18 @@ class AISREContext:
                 tool_args = json.loads(tool_call.function.arguments)
                 try:
                     result = await self.mcp_session.call_tool(tool_call.function.name, tool_args)
-                    output = str(result.content)
-                    console.print(f"[dim]   Result size: {len(output)} chars[/dim]")
+                    
+                    # Better content extraction for MCP 1.0+
+                    if isinstance(result.content, list):
+                        output = "\n".join([item.text for item in result.content if hasattr(item, 'text')])
+                    else:
+                        output = str(result.content)
+                    
+                    # Safety Truncation to prevent RateLimitError
+                    if len(output) > 2000: # Reduced to 2000 chars to be safe
+                        output = output[:2000] + "\n... [TRUNCATED DUE TO SIZE]"
+                        
+                    console.print(f"[dim]   Result size: {len(output)} chars (Truncated if > 2000)[/dim]")
                 except Exception as e:
                     output = f"Error: {str(e)}"
                     console.print(f"[red]❌ Tool Failure: {str(e)}[/red]")

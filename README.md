@@ -84,12 +84,41 @@ python main.py run "List all pods that have restarted more than 5 times"
 
 ## 🏗️ Architecture
 
+### 1. Level 1: Interactive Chat
+The standard mode where the user asks questions and the agent responds.
+
 ```mermaid
 graph LR
     User[User] -- "Natural Language" --> Agent[AI SRE Agent]
     Agent -- "Reasoning (GPT-4o)" --> LLM[OpenAI API]
     Agent -- "Tools (MCP)" --> MCPServer[K8s MCP Server]
     MCPServer -- "kubectl" --> Cluster[Kubernetes Cluster]
+```
+
+### 2. Level 3: Protocol for Self-Correction (Auto-Fix)
+The **Daemon Mode** runs in the background. It not only identifies issues but actively corrects them (Restarting pods or Patching configs).
+
+```mermaid
+graph TD
+    Daemon[Observer Daemon] -->|Polls| Cluster[Kubernetes Cluster]
+    Cluster -->|Alerts| Daemon
+    Daemon -->|Diagnose| Agent[AI Agent Core]
+    Agent -->|Determine Fix| Decision{Fixable?}
+    
+    Decision -->|Yes| FixType{Type?}
+    Decision -->|No| Human[Human Alert 🚨]
+    
+    FixType -->|Transient| Restart[Action: Delete Pod 🔄]
+    FixType -->|Config Error| Patch[Action: Patch Deploy 📝]
+    
+    Restart --> Cluster
+    Patch --> Cluster
+    
+    style Daemon fill:#f9f,stroke:#333
+    style Agent fill:#bbf,stroke:#333
+    style Restart fill:#9f9,stroke:#333
+    style Patch fill:#9f9,stroke:#333
+    style Human fill:#ff9,stroke:#333
 ```
 
 *   **Core Engine**: `src/core/agent.py` - Manages conversation state and tool execution loop.

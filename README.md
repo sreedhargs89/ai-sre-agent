@@ -84,6 +84,8 @@ python main.py run "List all pods that have restarted more than 5 times"
 
 ## 🏗️ Architecture
 
+![AI SRE Agent Architecture](assets/architecture_diagram.png)
+
 ### 1. Level 1: Interactive Chat
 The standard mode where the user asks questions and the agent responds.
 
